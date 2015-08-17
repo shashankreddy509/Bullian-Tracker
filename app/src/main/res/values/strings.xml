@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Bullian Tracker</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="LastSync">Last Updated</string>
+    <string name="Home">Home</string>
+    <string name="Feature1">Feature 1</string>
+    <string name="Feature2">Feature 2</string>
+    <string name="Feature3">Feature 3</string>
+</resources>
