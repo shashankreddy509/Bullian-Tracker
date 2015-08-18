@@ -24,37 +24,36 @@ import java.util.ArrayList;
 
 public class Home extends AppCompatActivity {
 
-    Urls urls;
-    ArrayList<BarEntry> Price;
-    ArrayList<String> labels;
+    private ArrayList<BarEntry> Price;
+    private ArrayList<String> labels;
 
-    JSONArray jsonArrayData;
-    BarChart chart1;
+    private JSONArray jsonArrayData;
+    private BarChart chart1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        urls = new Urls();
+        Urls urls = new Urls();
 
         chart1 = (BarChart) findViewById(R.id.chart1);
-        labels = new ArrayList<String>();
-        Price = new ArrayList<BarEntry>();
+        labels = new ArrayList<>();
+        Price = new ArrayList<>();
 
         //Json Request
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, urls.GoldRatesUrl(), null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, urls.GoldRatesUrl(5), null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             jsonArrayData = response.getJSONArray("data");
-                            String DataofJsonArray = "";
+                            String DataOfJsonArray;
                             for (int i = 0; i < 2; i++) {
-                                DataofJsonArray = jsonArrayData.getString(i);
-                                DataofJsonArray = DataofJsonArray.substring(1);
-                                DataofJsonArray = DataofJsonArray.substring(0, DataofJsonArray.length() - 1);
-                                labels.add(DataofJsonArray.split(",")[0].replace("@", "").toString());
-                                Price.add(new BarEntry(Float.parseFloat(DataofJsonArray.split(",")[1].toString()), i));
+                                DataOfJsonArray = jsonArrayData.getString(i);
+                                DataOfJsonArray = DataOfJsonArray.substring(1);
+                                DataOfJsonArray = DataOfJsonArray.substring(0, DataOfJsonArray.length() - 1);
+                                labels.add(DataOfJsonArray.split(",")[0].replace("@", ""));
+                                Price.add(new BarEntry(Float.parseFloat(DataOfJsonArray.split(",")[1]), i));
                             }
 
                             BarDataSet dataSet = new BarDataSet(Price, "Gold Price");

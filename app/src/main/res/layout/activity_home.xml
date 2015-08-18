@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/Header"
-            android:text="@string/LastSync" />
+            android:text="@string/LastSync" tools:ignore="RtlHardcoded"/>
     </RelativeLayout>
 
     <TableLayout
