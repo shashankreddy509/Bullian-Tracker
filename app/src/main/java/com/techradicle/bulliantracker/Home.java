@@ -13,32 +13,28 @@ import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
+import com.techradicle.DAO.GoldRatesDao;
+import com.techradicle.DataFetch.GoldDataFetch;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 
 public class Home extends AppCompatActivity {
 
-    private ArrayList<BarEntry> Price;
-    private ArrayList<String> labels;
-
     private JSONArray jsonArrayData;
     private BarChart chart1;
+    private GoldDataFetch mGoldDataFetch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Urls urls = new Urls();
+        mGoldDataFetch = new GoldDataFetch();
 
         chart1 = (BarChart) findViewById(R.id.chart1);
-        labels = new ArrayList<>();
-        Price = new ArrayList<>();
 
         //Json Request
         JsonObjectRequest jsonRequest = new JsonObjectRequest
@@ -47,24 +43,20 @@ public class Home extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             jsonArrayData = response.getJSONArray("data");
-                            String DataOfJsonArray;
-                            for (int i = 0; i < 2; i++) {
-                                DataOfJsonArray = jsonArrayData.getString(i);
-                                DataOfJsonArray = DataOfJsonArray.substring(1);
-                                DataOfJsonArray = DataOfJsonArray.substring(0, DataOfJsonArray.length() - 1);
-                                labels.add(DataOfJsonArray.split(",")[0].replace("@", ""));
-                                Price.add(new BarEntry(Float.parseFloat(DataOfJsonArray.split(",")[1]), i));
+
+                            if (mGoldDataFetch.FetchGoldData(jsonArrayData)) {
+                                BarDataSet dataSet = new BarDataSet(GoldRatesDao.price, "Gold Price");
+                                BarData data = new BarData(GoldRatesDao.labels, dataSet);
+                                chart1.setData(data);
+
+//                                chart1.setDescription("# of times Alice called BOB");
+
+                                chart1.animateY(5000);
+
+                                System.out.println("Chart Created");
                             }
-
-                            BarDataSet dataSet = new BarDataSet(Price, "Gold Price");
-                            BarData data = new BarData(labels, dataSet);
-                            chart1.setData(data);
-
-                            chart1.setDescription("# of times Alice called BOB");
-
-                            chart1.animateY(5000);
-
-                            System.out.println("Chart Created");
+                            printMessage("Price Count: "+GoldRatesDao.price.size());
+                            printMessage("Label Count: "+GoldRatesDao.labels.size());
                         } catch (JSONException e) {
                             System.out.println("Caught Exception");
                             e.printStackTrace();
@@ -79,6 +71,10 @@ public class Home extends AppCompatActivity {
                 });
 
         Volley.newRequestQueue(this).add(jsonRequest);
+    }
+
+    private void printMessage(String Message) {
+        System.out.println(Message);
     }
 
     @Override

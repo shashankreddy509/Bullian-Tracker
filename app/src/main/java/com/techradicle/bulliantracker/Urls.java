@@ -3,16 +3,17 @@ package com.techradicle.bulliantracker;
 /**
  * Created by shashankreddy509 on 8/14/15.
  */
+@SuppressWarnings("ALL")
 class Urls
 {
 
-    public String GoldRatesUrl(int Count)
+    public String GoldRatesUrl(int count)
     {
 //        return "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.csv";
-        if(5 ==0)
+        if(count == 0)
             return "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.json";
         else
-            return "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.json??rows=5";
+            return "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.json?rows="+count;
     }
 
     public String GetCurrencyRates()
