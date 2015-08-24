@@ -1,18 +1,16 @@
 package com.techradicle.DAO;
 
-import com.github.mikephil.charting.data.BarEntry;
-
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by shashankreddy509 on 8/18/15.
+ * This interface is DAO for
  */
-@SuppressWarnings("ALL")
-public class DashboardDao {
 
-    public static ArrayList<BarEntry> priceDashboard;
-    public static ArrayList<String> labelsDashboard;
+public interface DashboardDao {
 
-    public DashboardDao(){
-    }
+    List<String> priceDashboard = new ArrayList<>();
+    List<String> labelsDashboard = new ArrayList<>();
+
 }

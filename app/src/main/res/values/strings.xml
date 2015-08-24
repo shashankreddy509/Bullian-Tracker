@@ -6,7 +6,7 @@
 
     <string name="LastSync">Last Updated</string>
     <string name="Home">Home</string>
-    <string name="Feature1">Feature 1</string>
-    <string name="Feature2">Feature 2</string>
-    <string name="Feature3">Feature 3</string>
+    <string name="Feature1">Gold</string>
+    <string name="Feature2">Currency</string>
+    <string name="Feature3">Stocks</string>
 </resources>

@@ -1,80 +1,100 @@
 package com.techradicle.bulliantracker;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
-import com.techradicle.DAO.GoldRatesDao;
-import com.techradicle.DataFetch.GoldDataFetch;
+import com.github.mikephil.charting.data.BarEntry;
+import com.techradicle.DAO.CurrencyDataFetch;
+import com.techradicle.DAO.DashboardDao;
+import com.techradicle.DAO.GoldRatesFetch;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+
+import java.util.ArrayList;
 
 
 public class Home extends AppCompatActivity {
 
-    private JSONArray jsonArrayData;
     private BarChart chart1;
-    private GoldDataFetch mGoldDataFetch;
+
+    private void getDashBoardData() {
+
+        ArrayList<BarEntry> price = new ArrayList<>();
+        if (DashboardDao.labelsDashboard.size() > 0 && DashboardDao.priceDashboard.size() > 0) {
+
+            for (int i = 0; i < DashboardDao.priceDashboard.size(); i++) {
+                price.add(new BarEntry(Float.parseFloat(DashboardDao.priceDashboard.get(i)), i));
+            }
+
+            BarDataSet dataSet = new BarDataSet(price, "Gold Price");
+            BarData data = new BarData(DashboardDao.labelsDashboard, dataSet);
+            chart1.setData(data);
+            chart1.animateY(5000);
+        }
+        Log.d("PrintMessage", "Chart Created");
+    }
+
+    public void dashBoardClick(View view) {
+        getDashBoardData();
+    }
+
+    public void getCurrencyHistory(View view) {
+        ArrayList<BarEntry> price = new ArrayList<>();
+        if (CurrencyDataFetch.labels.size() > 0 && CurrencyDataFetch.price.size() > 0) {
+
+            for (int i = 0; i < CurrencyDataFetch.price.size(); i++) {
+                price.add(new BarEntry(Float.parseFloat(CurrencyDataFetch.price.get(i)), i));
+            }
+
+            BarDataSet dataSet = new BarDataSet(price, "Exchange Rate");
+            BarData data = new BarData(CurrencyDataFetch.labels, dataSet);
+            chart1.setData(data);
+            chart1.animateY(5000);
+        }
+    }
+
+    public void getStocksHistory(View view) {
+
+    }
+
+    public void getGoldHistory(View view) {
+        ArrayList<BarEntry> price = new ArrayList<>();
+        if (GoldRatesFetch.labels.size() > 0 && GoldRatesFetch.price.size() > 0) {
+
+            for (int i = 0; i < GoldRatesFetch.price.size(); i++) {
+                price.add(new BarEntry(Float.parseFloat(GoldRatesFetch.price.get(i)), i));
+            }
+
+            BarDataSet dataSet = new BarDataSet(price, "Gold Price");
+            BarData data = new BarData(GoldRatesFetch.labels, dataSet);
+            chart1.setData(data);
+            chart1.animateY(5000);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Urls urls = new Urls();
-        mGoldDataFetch = new GoldDataFetch();
-
+        GoldRatesFetch goldDataFetch = new GoldRatesFetch(getApplicationContext());
+        CurrencyDataFetch currencyDataFetch = new CurrencyDataFetch(getApplicationContext());
         chart1 = (BarChart) findViewById(R.id.chart1);
 
-        //Json Request
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, urls.GoldRatesUrl(5), null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            jsonArrayData = response.getJSONArray("data");
+        DashboardDao.labelsDashboard.clear();
+        DashboardDao.priceDashboard.clear();
+        GoldRatesFetch.labels.clear();
+        GoldRatesFetch.price.clear();
+        goldDataFetch.GetGoldHistory();
+        goldDataFetch.GetCurrentGoldPrice();
+        currencyDataFetch.GetCurrentCurrency();
+        currencyDataFetch.GetCurrencyHistory();
 
-                            if (mGoldDataFetch.FetchGoldData(jsonArrayData)) {
-                                BarDataSet dataSet = new BarDataSet(GoldRatesDao.price, "Gold Price");
-                                BarData data = new BarData(GoldRatesDao.labels, dataSet);
-                                chart1.setData(data);
-
-//                                chart1.setDescription("# of times Alice called BOB");
-
-                                chart1.animateY(5000);
-
-                                System.out.println("Chart Created");
-                            }
-                            printMessage("Price Count: "+GoldRatesDao.price.size());
-                            printMessage("Label Count: "+GoldRatesDao.labels.size());
-                        } catch (JSONException e) {
-                            System.out.println("Caught Exception");
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-
-        Volley.newRequestQueue(this).add(jsonRequest);
-    }
-
-    private void printMessage(String Message) {
-        System.out.println(Message);
+        getDashBoardData();
     }
 
     @Override

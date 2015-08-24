@@ -1,84 +1,88 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Home">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".Home">
 
 
     <RelativeLayout
-        android:id="@+id/rlMainForBars"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/rlMainForDisplayingLastSyncDate"
-        android:layout_marginBottom="50dp">
+            android:id="@+id/rlMainForBars"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/rlMainForDisplayingLastSyncDate"
+            android:layout_marginBottom="50dp">
 
         <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+                android:id="@+id/chart1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rlMainForDisplayingLastSyncDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true">
-
-        <TextView
-            android:id="@+id/Header"
+            android:id="@+id/rlMainForDisplayingLastSyncDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/LastSync" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
 
         <TextView
-            android:id="@+id/LastUpdateTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/Header"
-            android:text="@string/LastSync" tools:ignore="RtlHardcoded"/>
+                android:id="@+id/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/LastSync"/>
+
+        <TextView
+                android:id="@+id/LastUpdateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/Header"
+                android:text="@string/LastSync" tools:ignore="RtlHardcoded"/>
     </RelativeLayout>
 
     <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:shrinkColumns="*"
-        android:stretchColumns="*">
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:shrinkColumns="*"
+            android:stretchColumns="*">
 
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Home"
-                android:id="@+id/button" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Home"
+                    android:onClick="dashBoardClick"
+                    android:id="@+id/button"/>
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Feature1"
-                android:id="@+id/button2" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Feature1"
+                    android:onClick="getGoldHistory"
+                    android:id="@+id/button2"/>
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Feature2"
-                android:id="@+id/button3" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Feature2"
+                    android:onClick="getCurrencyHistory"
+                    android:id="@+id/button3"/>
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Feature3"
-                android:id="@+id/button4" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Feature3"
+                    android:onClick="getStocksHistory"
+                    android:id="@+id/button4"/>
         </TableRow>
     </TableLayout>
 </RelativeLayout>
