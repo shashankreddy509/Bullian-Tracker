@@ -12,25 +12,33 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by shashankreddy509 on 8/24/15.
  * This call is used to get the Gold rates from server and store.
  */
 
-public class GoldRatesFetch implements GoldRatesDao {
+public class QuandlGoldFetch implements QuandlGoldDao {
 
     private final Context mContext;
     private JSONArray jsonArrayData;
 
-    public GoldRatesFetch(Context context) {
+    private List<String> price = new ArrayList<>();
+    private List<String> labels = new ArrayList<>();
+
+    private String urlGoldPrice = "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.json?rows=";
+
+    public QuandlGoldFetch(Context context) {
         mContext = context;
     }
 
     @Override
-    public void GetCurrentGoldPrice() {
+    public void getCurrent() {
         //In this method we will get the Current/Latest Gold Rate
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, GoldRatesDao.urlGoldPrice + "1", null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, urlGoldPrice + "1", null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -65,10 +73,10 @@ public class GoldRatesFetch implements GoldRatesDao {
                     DashboardDao.labelsDashboard.add(DataOfJsonArray.split(",")[0].replace("@", ""));
                     DashboardDao.priceDashboard.add(DataOfJsonArray.split(",")[1]);
                 } else {
-                    assert GoldRatesDao.labels != null;
-                    GoldRatesDao.labels.add(DataOfJsonArray.split(",")[0].replace("@", ""));
-                    assert GoldRatesDao.price != null;
-                    GoldRatesDao.price.add(DataOfJsonArray.split(",")[1]);
+                    assert labels != null;
+                    labels.add(DataOfJsonArray.split(",")[0].replace("@", ""));
+                    assert price != null;
+                    price.add(DataOfJsonArray.split(",")[1]);
                 }
             }
         } catch (Exception ex) {
@@ -77,10 +85,10 @@ public class GoldRatesFetch implements GoldRatesDao {
     }
 
     @Override
-    public void GetGoldHistory() {
+    public void getHistory() {
         //In this Method we will ge the history of gold Rates for last 5 days.
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, GoldRatesDao.urlGoldPrice + "5", null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, urlGoldPrice + "5", null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -99,5 +107,13 @@ public class GoldRatesFetch implements GoldRatesDao {
                 });
 
         Volley.newRequestQueue(mContext).add(jsonRequest);
+    }
+
+    public List<String> getPrice() {
+        return this.price;
+    }
+
+    public List<String> getLabels() {
+        return this.labels;
     }
 }

@@ -19,15 +19,15 @@ import java.util.List;
  * Created by shashankreddy509 on 8/24/15.
  * This class is used to fetch the data from server and parse the data and store.
  */
-public class CurrencyDataFetch implements CurrencyDao {
+public class QuandlCurrencyDataFetch implements QuandlCurrencyDao {
 
-    List<String> price = new ArrayList<>();
-    List<String> labels = new ArrayList<>();
-    String urlExchangePrice = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=";
+    private List<String> price = new ArrayList<>();
+    private List<String> labels = new ArrayList<>();
+    private String urlExchangePrice = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=";
     private Context mContext;
     private JSONArray jsonArrayData;
 
-    public CurrencyDataFetch(Context context) {
+    public QuandlCurrencyDataFetch(Context context) {
         mContext = context;
     }
 
