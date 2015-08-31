@@ -12,12 +12,18 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by shashankreddy509 on 8/24/15.
  * This class is used to fetch the data from server and parse the data and store.
  */
 public class CurrencyDataFetch implements CurrencyDao {
 
+    List<String> price = new ArrayList<>();
+    List<String> labels = new ArrayList<>();
+    String urlExchangePrice = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=";
     private Context mContext;
     private JSONArray jsonArrayData;
 
@@ -26,9 +32,9 @@ public class CurrencyDataFetch implements CurrencyDao {
     }
 
     @Override
-    public void GetCurrentCurrency() {
+    public void getCurrent() {
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, CurrencyDataFetch.urlExchangePrice + "1", null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, urlExchangePrice + "1", null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -62,10 +68,10 @@ public class CurrencyDataFetch implements CurrencyDao {
                     DashboardDao.labelsDashboard.add(DataOfJsonArray.split(",")[0].replace("@", ""));
                     DashboardDao.priceDashboard.add(DataOfJsonArray.split(",")[1]);
                 } else {
-                    assert CurrencyDataFetch.labels != null;
-                    CurrencyDataFetch.labels.add(DataOfJsonArray.split(",")[0].replace("@", ""));
-                    assert CurrencyDataFetch.price != null;
-                    CurrencyDataFetch.price.add(DataOfJsonArray.split(",")[1]);
+                    assert labels != null;
+                    labels.add(DataOfJsonArray.split(",")[0].replace("@", ""));
+                    assert price != null;
+                    price.add(DataOfJsonArray.split(",")[1]);
                 }
             }
         } catch (Exception ex) {
@@ -74,9 +80,9 @@ public class CurrencyDataFetch implements CurrencyDao {
     }
 
     @Override
-    public void GetCurrencyHistory() {
+    public void getHistory() {
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, CurrencyDao.urlExchangePrice + "5", null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, urlExchangePrice + "5", null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -95,5 +101,13 @@ public class CurrencyDataFetch implements CurrencyDao {
                 });
 
         Volley.newRequestQueue(mContext).add(jsonRequest);
+    }
+
+    public List<String> getPrice() {
+        return this.price;
+    }
+
+    public List<String> getLabels() {
+        return this.labels;
     }
 }

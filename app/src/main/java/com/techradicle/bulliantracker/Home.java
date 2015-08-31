@@ -16,10 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Home extends AppCompatActivity {
 
+    CurrencyDataFetch mCurrencyDataFetch;
+    List<String> labels, prices;
     private BarChart chart1;
 
     private void getDashBoardData() {
@@ -45,14 +48,16 @@ public class Home extends AppCompatActivity {
 
     public void getCurrencyHistory(View view) {
         ArrayList<BarEntry> price = new ArrayList<>();
-        if (CurrencyDataFetch.labels.size() > 0 && CurrencyDataFetch.price.size() > 0) {
+        labels = mCurrencyDataFetch.getLabels();
+        prices = mCurrencyDataFetch.getPrice();
+        if (labels.size() > 0 && price.size() > 0) {
 
-            for (int i = 0; i < CurrencyDataFetch.price.size(); i++) {
-                price.add(new BarEntry(Float.parseFloat(CurrencyDataFetch.price.get(i)), i));
+            for (int i = 0; i < price.size(); i++) {
+                price.add(new BarEntry(Float.parseFloat(prices.get(i)), i));
             }
 
             BarDataSet dataSet = new BarDataSet(price, "Exchange Rate");
-            BarData data = new BarData(CurrencyDataFetch.labels, dataSet);
+            BarData data = new BarData(labels, dataSet);
             chart1.setData(data);
             chart1.animateY(5000);
         }
@@ -91,8 +96,8 @@ public class Home extends AppCompatActivity {
         GoldRatesFetch.price.clear();
         goldDataFetch.GetGoldHistory();
         goldDataFetch.GetCurrentGoldPrice();
-        currencyDataFetch.GetCurrentCurrency();
-        currencyDataFetch.GetCurrencyHistory();
+        currencyDataFetch.getCurrent();
+        currencyDataFetch.getHistory();
 
         getDashBoardData();
     }
