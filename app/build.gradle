@@ -21,10 +21,10 @@ android {
 
 dependencies {
 
-    //This dependency is the Android support library
+    //This is the Android support library
     compile 'com.android.support:appcompat-v7:22.2.0'
-    //This dependency is used for calling the Http services
+    //This library is used to call the Http services from android application.
     compile project(':Volley')
-    //This dependency is used to get the different charts
+    //This library is used to get the different charts
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.3'
 }

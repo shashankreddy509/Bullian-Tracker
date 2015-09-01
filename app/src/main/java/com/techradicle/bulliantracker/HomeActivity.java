@@ -5,8 +5,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.techradicle.DAO.DashboardDao;
-import com.techradicle.DAO.QuandlCurrencyDataFetch;
-import com.techradicle.DAO.QuandlGoldFetch;
+import com.techradicle.DAO.QuandlCurrencyDao;
+import com.techradicle.DAO.QuandlGoldDao;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,17 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 
-public class Home extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
-    private QuandlCurrencyDataFetch mCurrencyDataFetch;
-    private QuandlGoldFetch mGoldRatesFetch;
-    private List<String> labelsCurrency;
-    private List<String> pricesCurrency;
-    private List<String> labelsGold;
-    private List<String> pricesGold;
+    private QuandlCurrencyDao mQuandlCurrencyDao;
+    private QuandlGoldDao mGoldRatesFetch;
+
     private BarChart chart1;
 
     private void getDashBoardData() {
@@ -52,16 +49,16 @@ public class Home extends AppCompatActivity {
 
     public void getCurrencyHistory(View view) {
         ArrayList<BarEntry> price = new ArrayList<>();
-        labelsCurrency = mCurrencyDataFetch.getLabels();
-        pricesCurrency = mCurrencyDataFetch.getPrice();
-        if (labelsCurrency.size() > 0 && price.size() > 0) {
 
-            for (int i = 0; i < price.size(); i++) {
-                price.add(new BarEntry(Float.parseFloat(pricesCurrency.get(i)), i));
+        HashMap<String, String> currencyData = mQuandlCurrencyDao.getCurrencyData();
+
+        if (currencyData.size() > 0) {
+            String[] str = currencyData.keySet().toArray(new String[currencyData.size()]);
+            for (int j = 0; j < str.length; j++) {
+                price.add(new BarEntry(Float.parseFloat(currencyData.get(str[j])), j));
             }
-
             BarDataSet dataSet = new BarDataSet(price, "Exchange Rate");
-            BarData data = new BarData(labelsCurrency, dataSet);
+            BarData data = new BarData(str, dataSet);
             chart1.setData(data);
             chart1.animateY(5000);
         }
@@ -73,16 +70,14 @@ public class Home extends AppCompatActivity {
 
     public void getGoldHistory(View view) {
         ArrayList<BarEntry> price = new ArrayList<>();
-        labelsGold = mGoldRatesFetch.getLabels();
-        pricesGold = mGoldRatesFetch.getPrice();
-        if (labelsGold.size() > 0 && pricesGold.size() > 0) {
-
-            for (int i = 0; i < pricesGold.size(); i++) {
-                price.add(new BarEntry(Float.parseFloat(pricesGold.get(i)), i));
+        HashMap<String, String> goldRates = mGoldRatesFetch.getGoldData();
+        if (goldRates.size() > 0) {
+            String[] str = goldRates.keySet().toArray(new String[goldRates.size()]);
+            for (int j = 0; j < str.length; j++) {
+                price.add(new BarEntry(Float.parseFloat(goldRates.get(str[j])), j));
             }
-
             BarDataSet dataSet = new BarDataSet(price, "Gold Price");
-            BarData data = new BarData(labelsGold, dataSet);
+            BarData data = new BarData(str, dataSet);
             chart1.setData(data);
             chart1.animateY(5000);
         }
@@ -93,21 +88,14 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         chart1 = (BarChart) findViewById(R.id.chart1);
-
-        mGoldRatesFetch = new QuandlGoldFetch(getApplicationContext());
-        mCurrencyDataFetch = new QuandlCurrencyDataFetch(getApplicationContext());
-
+        mGoldRatesFetch = new QuandlGoldDao(getApplicationContext());
+        mQuandlCurrencyDao = new QuandlCurrencyDao(getApplicationContext());
         DashboardDao.labelsDashboard.clear();
         DashboardDao.priceDashboard.clear();
-        labelsCurrency.clear();
-        labelsGold.clear();
-        pricesCurrency.clear();
-        pricesGold.clear();
         mGoldRatesFetch.getHistory();
-        mGoldRatesFetch.getCurrent();
-        mCurrencyDataFetch.getCurrent();
-        mCurrencyDataFetch.getHistory();
-
+        mGoldRatesFetch.getLatest();
+        mQuandlCurrencyDao.getLatest();
+        mQuandlCurrencyDao.getHistory();
         getDashBoardData();
     }
 
@@ -121,7 +109,7 @@ public class Home extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the HomeActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
