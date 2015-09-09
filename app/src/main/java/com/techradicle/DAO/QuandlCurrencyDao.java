@@ -39,7 +39,7 @@ public class QuandlCurrencyDao implements CurrencyDao {
                         try {
                             jsonArrayData = response.getJSONArray("data");
 
-                            GetExchangeRates(jsonArrayData, "Current");
+                            getExchangeRates(jsonArrayData, "Current");
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -56,7 +56,7 @@ public class QuandlCurrencyDao implements CurrencyDao {
         return currencyData;
     }
 
-    private void GetExchangeRates(JSONArray JsonInput, String type) {
+    private void getExchangeRates(JSONArray JsonInput, String type) {
         try {
             String DataOfJsonArray;
             for (int i = 0; i < JsonInput.length(); i++) {
@@ -86,7 +86,7 @@ public class QuandlCurrencyDao implements CurrencyDao {
                     public void onResponse(JSONObject response) {
                         try {
                             jsonArrayData = response.getJSONArray("data");
-                            GetExchangeRates(jsonArrayData, "History");
+                            getExchangeRates(jsonArrayData, "History");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -39,7 +39,7 @@ public class QuandlGoldDao implements GoldDao {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            GetGoldRates(response.getJSONArray("data"), "Current");
+                            getGoldRates(response.getJSONArray("data"), "Current");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -55,7 +55,7 @@ public class QuandlGoldDao implements GoldDao {
         return goldData;
     }
 
-    private void GetGoldRates(JSONArray JsonInput, String type) {
+    private void getGoldRates(JSONArray JsonInput, String type) {
         try {
             String DataOfJsonArray;
             for (int i = 0; i < JsonInput.length(); i++) {
@@ -85,7 +85,7 @@ public class QuandlGoldDao implements GoldDao {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            GetGoldRates(response.getJSONArray("data"), "History");
+                            getGoldRates(response.getJSONArray("data"), "History");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

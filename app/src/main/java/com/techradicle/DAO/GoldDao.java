@@ -7,7 +7,7 @@ import java.util.HashMap;
  * This interface is DAO for Gold rates.
  */
 
-interface GoldDao {
+public interface GoldDao {
 
     //This Method Gets the latest gold Rates from the given service.
     HashMap<String, String> getLatest();

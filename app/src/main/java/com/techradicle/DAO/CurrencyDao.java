@@ -7,7 +7,7 @@ import java.util.HashMap;
  * This interface is DAO for Currency Data.
  */
 
-interface CurrencyDao {
+public interface CurrencyDao {
 
     //Another API url
 //    http://apilayer.net/api/live?access_key=d1d6655c6607f6aa395a9e99091ec709&currencies=EUR,GBP,INR&source=USD&format=1
