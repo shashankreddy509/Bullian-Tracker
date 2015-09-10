@@ -30,9 +30,9 @@ public class QuandlCurrencyDao implements CurrencyDao {
 
     private final Map<String, String> currencyData = new HashMap<>();
     private final String QUANDL_EXCHANGE_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=";
-    BarChart mBarChart;
-    BarData data;
-    String strFrom = "";
+    private final BarChart mBarChart;
+    private BarData data;
+    private String strFrom = "";
 
     public QuandlCurrencyDao(BarChart mBarChart) {
         this.mBarChart = mBarChart;

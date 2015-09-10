@@ -30,8 +30,6 @@ public class QuandlDashboardDao implements DashboardDao {
 
     private final BarChart mBarChart;
     private final Map<String, String> mDashBoardData = new HashMap<>();
-    private final String QUANDL_EXCHANGE_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=1";
-    private final String QUANDL_GOLD_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.json?rows=1";
     private BarData data;
 
     public QuandlDashboardDao(BarChart mBarChart) {
@@ -40,8 +38,10 @@ public class QuandlDashboardDao implements DashboardDao {
 
     @Override
     public Map<String, String> getLatest() {
+        String QUANDL_EXCHANGE_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=1";
+        String QUANDL_GOLD_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.json?rows=1";
         new GetDashBoardData().execute(QUANDL_EXCHANGE_RATE_ENDPOINT, QUANDL_GOLD_RATE_ENDPOINT);
-        return null;
+        return mDashBoardData;
     }
 
     private void parseDashboardData(JSONArray JsonInput) {

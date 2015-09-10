@@ -33,20 +33,6 @@ public class HomeActivity extends AppCompatActivity {
 
     public void getCurrencyHistory(View view) {
         mCurrencyDao.getHistory();
-//        ArrayList<BarEntry> price = new ArrayList<>();
-////
-////        HashMap<String, String> currencyData = mQuandlCurrencyDao.getCurrencyData();
-////
-//        if (mCurrenctData.size() > 0) {
-//            String[] str = mCurrenctData.keySet().toArray(new String[mCurrenctData.size()]);
-//            for (int j = 0; j < str.length; j++) {
-//                price.add(new BarEntry(Float.parseFloat(mCurrenctData.get(str[j])), j));
-//            }
-//            BarDataSet dataSet = new BarDataSet(price, "Exchange Rate");
-//            BarData data = new BarData(str, dataSet);
-//            chart1.setData(data);
-//            chart1.animateY(5000);
-//        }
     }
 
     public void getStocksHistory(View view) {
@@ -55,17 +41,6 @@ public class HomeActivity extends AppCompatActivity {
 
     public void getGoldHistory(View view) {
         mGoldDao.getHistory();
-//        ArrayList<BarEntry> price = new ArrayList<>();
-//        if (mGoldData.size() > 0) {
-//            String[] str = mGoldData.keySet().toArray(new String[mGoldData.size()]);
-//            for (int j = 0; j < str.length; j++) {
-//                price.add(new BarEntry(Float.parseFloat(mGoldData.get(str[j])), j));
-//            }
-//            BarDataSet dataSet = new BarDataSet(price, "Gold Price");
-//            BarData data = new BarData(str, dataSet);
-//            chart1.setData(data);
-//            chart1.animateY(5000);
-//        }
     }
 
     @Override
