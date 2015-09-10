@@ -1,6 +1,6 @@
 package com.techradicle.DAO;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by shashankreddy509 on 8/18/15.
@@ -10,9 +10,9 @@ import java.util.HashMap;
 public interface GoldDao {
 
     //This Method Gets the latest gold Rates from the given service.
-    HashMap<String, String> getLatest();
+    Map<String, String> getLatest();
 
     //This Method gets the history of gold rates for the past 5 days.
-    HashMap<String, String> getHistory();
+    Map<String, String> getHistory();
 
 }

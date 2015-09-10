@@ -1,6 +1,5 @@
 package com.techradicle.DAO;
 
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -22,56 +21,41 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
- * Created by shashankreddy509 on 8/24/15.
- * This class is used to fetch the data from server and parse the data and store.
+ * Created by shashankreddy509 on 9/10/15.
+ * This class is used to fetch,parse and store the latest data of the gold and Exchange rates.
  */
-public class QuandlCurrencyDao implements CurrencyDao {
+public class QuandlDashboardDao implements DashboardDao {
 
-    private final Map<String, String> currencyData = new HashMap<>();
-    private final String QUANDL_EXCHANGE_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=";
-    BarChart mBarChart;
-    BarData data;
-    String strFrom = "";
+    private final BarChart mBarChart;
+    private final Map<String, String> mDashBoardData = new HashMap<>();
+    private final String QUANDL_EXCHANGE_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=1";
+    private final String QUANDL_GOLD_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.json?rows=1";
+    private BarData data;
 
-    public QuandlCurrencyDao(BarChart mBarChart) {
+    public QuandlDashboardDao(BarChart mBarChart) {
         this.mBarChart = mBarChart;
     }
 
     @Override
     public Map<String, String> getLatest() {
-        strFrom = "Current";
-        new GetCurrency().execute(QUANDL_EXCHANGE_RATE_ENDPOINT + "1");
-        return currencyData;
+        new GetDashBoardData().execute(QUANDL_EXCHANGE_RATE_ENDPOINT, QUANDL_GOLD_RATE_ENDPOINT);
+        return null;
     }
 
-    private void getExchangeRates(JSONArray JsonInput, String type) {
+    private void parseDashboardData(JSONArray JsonInput) {
         try {
             String DataOfJsonArray;
             for (int i = 0; i < JsonInput.length(); i++) {
                 DataOfJsonArray = JsonInput.getString(i);
                 DataOfJsonArray = DataOfJsonArray.substring(1);
                 DataOfJsonArray = DataOfJsonArray.substring(0, DataOfJsonArray.length() - 1);
-
-                if (type.equalsIgnoreCase("Current")) {
-                    //here we need to add to Dashboard data instead of gold data.
-                    currencyData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
-                    DashboardDao.labelsDashboard.add(DataOfJsonArray.split(",")[0].replace("@", ""));
-                    DashboardDao.priceDashboard.add(DataOfJsonArray.split(",")[1]);
-                } else {
-                    currencyData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
-                }
+                mDashBoardData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    public Map<String, String> getHistory() {
-        strFrom = "History";
-        new GetCurrency().execute(QUANDL_EXCHANGE_RATE_ENDPOINT + "5");
-        return currencyData;
     }
 
     private String getJsonData(String url) {
@@ -96,17 +80,19 @@ public class QuandlCurrencyDao implements CurrencyDao {
         }
     }
 
-    private class GetCurrency extends AsyncTask<String, Void, BarData> {
+    private class GetDashBoardData extends AsyncTask<String, Void, BarData> {
+
         @Override
         protected BarData doInBackground(String[] params) {
             try {
-                getExchangeRates(new JSONObject(getJsonData(params[0])).getJSONArray("data"), strFrom);
-                for (int i = 0; i < currencyData.size(); i++) {
+                parseDashboardData(new JSONObject(getJsonData(params[0])).getJSONArray("data"));
+                parseDashboardData(new JSONObject(getJsonData(params[1])).getJSONArray("data"));
+                for (int i = 0; i < mDashBoardData.size(); i++) {
                     ArrayList<BarEntry> price = new ArrayList<>();
-                    if (currencyData.size() > 0) {
-                        String[] str = currencyData.keySet().toArray(new String[currencyData.size()]);
+                    if (mDashBoardData.size() > 0) {
+                        String[] str = mDashBoardData.keySet().toArray(new String[mDashBoardData.size()]);
                         for (int j = 0; j < str.length; j++) {
-                            price.add(new BarEntry(Float.parseFloat(currencyData.get(str[j])), j));
+                            price.add(new BarEntry(Float.parseFloat(mDashBoardData.get(str[j])), j));
                         }
                         BarDataSet dataSet = new BarDataSet(price, "Gold Price");
                         data = new BarData(str, dataSet);

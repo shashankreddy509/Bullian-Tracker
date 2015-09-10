@@ -1,18 +1,25 @@
 package com.techradicle.DAO;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
+import android.os.AsyncTask;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by shashankreddy509 on 8/24/15.
@@ -21,37 +28,22 @@ import java.util.HashMap;
 
 public class QuandlGoldDao implements GoldDao {
 
-    private final Context mContext;
-
-    private final HashMap<String, String> goldData = new HashMap<>();
-
+    private final BarChart mBarChart;
+    private final Map<String, String> goldData = new HashMap<>();
     private final String QUANDL_GOLD_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/BUNDESBANK/BBK01_WT5511.json?rows=";
+    private String strFrom = "";
+    private BarData data;
 
-    public QuandlGoldDao(Context context) {
-        mContext = context;
+    public QuandlGoldDao(BarChart mBarChart) {
+        this.mBarChart = mBarChart;
     }
 
     @Override
-    public HashMap<String, String> getLatest() {
+    public Map<String, String> getLatest() {
         //In this method we will get the Current/Latest Gold Rate
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, QUANDL_GOLD_RATE_ENDPOINT + "1", null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            getGoldRates(response.getJSONArray("data"), "Current");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-        Volley.newRequestQueue(mContext).add(jsonRequest);
+        strFrom = "Current";
+        new GetGoldRates().execute(QUANDL_GOLD_RATE_ENDPOINT + "1");
         return goldData;
     }
 
@@ -78,30 +70,62 @@ public class QuandlGoldDao implements GoldDao {
     }
 
     @Override
-    public HashMap<String, String> getHistory() {
+    public Map<String, String> getHistory() {
         //In this Method we will ge the history of gold Rates for last 5 days.
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, QUANDL_GOLD_RATE_ENDPOINT + "5", null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            getGoldRates(response.getJSONArray("data"), "History");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-        Volley.newRequestQueue(mContext).add(jsonRequest);
+        strFrom = "History";
+        new GetGoldRates().execute(QUANDL_GOLD_RATE_ENDPOINT + "5");
         return goldData;
     }
 
-    public HashMap<String, String> getGoldData() {
-        return this.goldData;
+    private String getJsonData(String url) {
+        try {
+            URL mUrl = new URL(url);
+            HttpURLConnection mHttpURLConnection = (HttpURLConnection) mUrl.openConnection();
+            mHttpURLConnection.connect();
+            if (mHttpURLConnection.getResponseCode() == 200) {
+                InputStream is = mHttpURLConnection.getInputStream();
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader(is));
+                StringBuilder responseStrBuilder = new StringBuilder();
+                String inputStr;
+                while ((inputStr = streamReader.readLine()) != null)
+                    responseStrBuilder.append(inputStr);
+                return responseStrBuilder.toString();
+            } else {
+                return "";
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return "";
+        }
+    }
+
+    private class GetGoldRates extends AsyncTask<String, Void, BarData> {
+
+        @Override
+        protected BarData doInBackground(String[] params) {
+            try {
+                getGoldRates(new JSONObject(getJsonData(params[0])).getJSONArray("data"), strFrom);
+                for (int i = 0; i < goldData.size(); i++) {
+                    ArrayList<BarEntry> price = new ArrayList<>();
+                    if (goldData.size() > 0) {
+                        String[] str = goldData.keySet().toArray(new String[goldData.size()]);
+                        for (int j = 0; j < str.length; j++) {
+                            price.add(new BarEntry(Float.parseFloat(goldData.get(str[j])), j));
+                        }
+                        BarDataSet dataSet = new BarDataSet(price, "Gold Price");
+                        data = new BarData(str, dataSet);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(BarData s) {
+            mBarChart.setData(s);
+            mBarChart.animateY(5000);
+        }
     }
 }
