@@ -2,10 +2,8 @@ package com.techradicle.bulliantracker;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.techradicle.DAO.CurrencyDao;
-import com.techradicle.DAO.DashboardDao;
 import com.techradicle.DAO.GoldDao;
 import com.techradicle.DAO.QuandlCurrencyDao;
-import com.techradicle.DAO.QuandlDashboardDao;
 import com.techradicle.DAO.QuandlGoldDao;
 
 import android.os.Bundle;
@@ -19,11 +17,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private GoldDao mGoldDao;
     private CurrencyDao mCurrencyDao;
-    private DashboardDao mDashboardDao;
 
 
     private void getDashBoardData() {
-        mDashboardDao.getLatest();
         Log.d("PrintMessage", "Chart Created");
     }
 
@@ -49,8 +45,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         mGoldDao = new QuandlGoldDao((BarChart) findViewById(R.id.chart1));
         mCurrencyDao = new QuandlCurrencyDao((BarChart) findViewById(R.id.chart1));
-        mDashboardDao = new QuandlDashboardDao((BarChart) findViewById(R.id.chart1));
-        mDashboardDao.getLatest();
     }
 
     @Override

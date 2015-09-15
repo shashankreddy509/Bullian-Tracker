@@ -1,6 +1,5 @@
 package com.techradicle.DAO;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -10,16 +9,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import yahoofinance.YahooFinance;
 
 
 /**
@@ -28,12 +32,16 @@ import java.util.Map;
  */
 public class QuandlDashboardDao implements DashboardDao {
 
-    private final BarChart mBarChart;
+    private final TextView tvGold, tvUSD, tvStocks;
     private final Map<String, String> mDashBoardData = new HashMap<>();
+    private final List<String> mStringList = new ArrayList<>();
     private BarData data;
+    private BigDecimal price;
 
-    public QuandlDashboardDao(BarChart mBarChart) {
-        this.mBarChart = mBarChart;
+    public QuandlDashboardDao(TextView tvGold, TextView tvUSD, TextView tvStocks) {
+        this.tvGold = tvGold;
+        this.tvUSD = tvUSD;
+        this.tvStocks = tvStocks;
     }
 
     @Override
@@ -51,7 +59,7 @@ public class QuandlDashboardDao implements DashboardDao {
                 DataOfJsonArray = JsonInput.getString(i);
                 DataOfJsonArray = DataOfJsonArray.substring(1);
                 DataOfJsonArray = DataOfJsonArray.substring(0, DataOfJsonArray.length() - 1);
-                mDashBoardData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
+                mStringList.add(DataOfJsonArray.split(",")[1]);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -87,6 +95,7 @@ public class QuandlDashboardDao implements DashboardDao {
             try {
                 parseDashboardData(new JSONObject(getJsonData(params[0])).getJSONArray("data"));
                 parseDashboardData(new JSONObject(getJsonData(params[1])).getJSONArray("data"));
+                price = YahooFinance.get("AAPL").getQuote(true).getPrice();
                 for (int i = 0; i < mDashBoardData.size(); i++) {
                     ArrayList<BarEntry> price = new ArrayList<>();
                     if (mDashBoardData.size() > 0) {
@@ -98,7 +107,7 @@ public class QuandlDashboardDao implements DashboardDao {
                         data = new BarData(str, dataSet);
                     }
                 }
-            } catch (JSONException e) {
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
             return data;
@@ -106,8 +115,9 @@ public class QuandlDashboardDao implements DashboardDao {
 
         @Override
         protected void onPostExecute(BarData s) {
-            mBarChart.setData(s);
-            mBarChart.animateY(5000);
+            tvGold.setText(mStringList.get(1));
+            tvUSD.setText(mStringList.get(0));
+            tvStocks.setText(price + "");
         }
     }
 }

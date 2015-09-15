@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <RelativeLayout
+            android:id="@+id/rlMainForDisplayingLastSyncDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+
+        <TextView
+                android:id="@+id/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/LastSync"/>
+
+        <TextView
+                android:id="@+id/LastUpdateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/Header"
+                android:text="@string/LastSync" tools:ignore="RtlHardcoded"/>
+    </RelativeLayout>
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_below="@+id/rlMainForDisplayingLastSyncDate"
+                  android:orientation="vertical">
+
+
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="40"
+                      android:id="@+id/llHome"
+                      android:orientation="vertical">
+            <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" android:background="#f00">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_centerVertical="true"
+                          android:layout_marginLeft="10dp"
+                          android:layout_alignParentLeft="true"
+                          android:textSize="28sp"
+                          android:text="Gold" android:textColor="#000"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text=""
+                        android:layout_marginRight="10dp"
+                        android:textColor="#000"
+                        android:textSize="28sp"
+                        android:id="@+id/tvGoldRate"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+            <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" android:background="#0f0">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_centerVertical="true"
+                          android:layout_marginLeft="10dp"
+                          android:layout_alignParentLeft="true"
+                          android:textSize="28sp"
+                          android:text="Stocks" android:textColor="#000"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/tvStock"
+                        android:textSize="28sp"
+                        android:textColor="#000"
+                        android:layout_marginRight="10dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+            <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#00f"
+                            android:layout_weight="1">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_centerVertical="true"
+                          android:layout_marginLeft="10dp"
+                          android:layout_alignParentLeft="true"
+                          android:textSize="28sp"
+                          android:text="USD" android:textColor="#000"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/tvUSD"
+                        android:textSize="28sp"
+                        android:textColor="#000"
+                        android:layout_marginRight="10dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_weight="1">
+            <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Home" android:id="@+id/btnHome"/>
+            <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Gold" android:id="@+id/btnGold"/>
+            <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="USD" android:id="@+id/btnUSD"/>
+            <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Stocks" android:id="@+id/btnStocks"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
