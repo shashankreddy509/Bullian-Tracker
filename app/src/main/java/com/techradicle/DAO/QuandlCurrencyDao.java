@@ -1,11 +1,6 @@
 package com.techradicle.DAO;
 
 
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,9 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by shashankreddy509 on 8/24/15.
@@ -30,13 +25,7 @@ public class QuandlCurrencyDao implements CurrencyDao {
 
     private final Map<String, String> currencyData = new HashMap<>();
     private final String QUANDL_EXCHANGE_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=";
-    private final BarChart mBarChart;
-    private BarData data;
     private String strFrom = "";
-
-    public QuandlCurrencyDao(BarChart mBarChart) {
-        this.mBarChart = mBarChart;
-    }
 
     @Override
     public Map<String, String> getLatest() {
@@ -56,8 +45,6 @@ public class QuandlCurrencyDao implements CurrencyDao {
                 if (type.equalsIgnoreCase("Current")) {
                     //here we need to add to Dashboard data instead of gold data.
                     currencyData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
-                    DashboardDao.labelsDashboard.add(DataOfJsonArray.split(",")[0].replace("@", ""));
-                    DashboardDao.priceDashboard.add(DataOfJsonArray.split(",")[1]);
                 } else {
                     currencyData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
                 }
@@ -70,7 +57,11 @@ public class QuandlCurrencyDao implements CurrencyDao {
     @Override
     public Map<String, String> getHistory() {
         strFrom = "History";
-        new GetCurrency().execute(QUANDL_EXCHANGE_RATE_ENDPOINT + "5");
+        try {
+            new GetCurrency().execute(QUANDL_EXCHANGE_RATE_ENDPOINT + "5").get();
+        } catch (InterruptedException | ExecutionException ie) {
+            ie.printStackTrace();
+        }
         return currencyData;
     }
 
@@ -96,32 +87,15 @@ public class QuandlCurrencyDao implements CurrencyDao {
         }
     }
 
-    private class GetCurrency extends AsyncTask<String, Void, BarData> {
+    private class GetCurrency extends AsyncTask<String, Void, Map<String, String>> {
         @Override
-        protected BarData doInBackground(String[] params) {
+        protected Map<String, String> doInBackground(String[] params) {
             try {
                 getExchangeRates(new JSONObject(getJsonData(params[0])).getJSONArray("data"), strFrom);
-                for (int i = 0; i < currencyData.size(); i++) {
-                    ArrayList<BarEntry> price = new ArrayList<>();
-                    if (currencyData.size() > 0) {
-                        String[] str = currencyData.keySet().toArray(new String[currencyData.size()]);
-                        for (int j = 0; j < str.length; j++) {
-                            price.add(new BarEntry(Float.parseFloat(currencyData.get(str[j])), j));
-                        }
-                        BarDataSet dataSet = new BarDataSet(price, "Gold Price");
-                        data = new BarData(str, dataSet);
-                    }
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return data;
-        }
-
-        @Override
-        protected void onPostExecute(BarData s) {
-            mBarChart.setData(s);
-            mBarChart.animateY(5000);
+            return currencyData;
         }
     }
 }
