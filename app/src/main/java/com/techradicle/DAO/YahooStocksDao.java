@@ -32,12 +32,12 @@ public class YahooStocksDao implements StocksDao {
         @Override
         protected Map<String, String> doInBackground(String... params) {
             try {
-                Stock tesla = YahooFinance.get("GOOG", true);
-                String str = tesla.getHistory().toString();
-                String[] str1 = str.split("GOOG@");
+                Stock goog = YahooFinance.get("GOOG", true);
+                String mGoogleHistory = goog.getHistory().toString();
+                String[] mGoogleHistoryarray = mGoogleHistory.split("GOOG@");
                 for (int i = 1; i < 6; i++) {
-                    str = str1[i].split(":")[1].split(",")[0].split("-")[1];
-                    mStockData.put(str1[i].split(":")[0], str);
+                    mGoogleHistory = mGoogleHistoryarray[i].split(":")[1].split(",")[0].split("-")[1];
+                    mStockData.put(mGoogleHistoryarray[i].split(":")[0], mGoogleHistory);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

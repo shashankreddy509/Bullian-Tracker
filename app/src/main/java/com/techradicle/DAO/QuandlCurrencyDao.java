@@ -25,16 +25,14 @@ public class QuandlCurrencyDao implements CurrencyDao {
 
     private final Map<String, String> currencyData = new HashMap<>();
     private final String QUANDL_EXCHANGE_RATE_ENDPOINT = "https://www.quandl.com/api/v1/datasets/CURRFX/USDINR.json?rows=";
-    private String strFrom = "";
 
     @Override
     public Map<String, String> getLatest() {
-        strFrom = "Current";
         new GetCurrency().execute(QUANDL_EXCHANGE_RATE_ENDPOINT + "1");
         return currencyData;
     }
 
-    private void getExchangeRates(JSONArray JsonInput, String type) {
+    private void getExchangeRates(JSONArray JsonInput) {
         try {
             String DataOfJsonArray;
             for (int i = 0; i < JsonInput.length(); i++) {
@@ -42,12 +40,7 @@ public class QuandlCurrencyDao implements CurrencyDao {
                 DataOfJsonArray = DataOfJsonArray.substring(1);
                 DataOfJsonArray = DataOfJsonArray.substring(0, DataOfJsonArray.length() - 1);
 
-                if (type.equalsIgnoreCase("Current")) {
-                    //here we need to add to Dashboard data instead of gold data.
-                    currencyData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
-                } else {
-                    currencyData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
-                }
+                currencyData.put(DataOfJsonArray.split(",")[0].replace("@", ""), DataOfJsonArray.split(",")[1]);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -56,7 +49,6 @@ public class QuandlCurrencyDao implements CurrencyDao {
 
     @Override
     public Map<String, String> getHistory() {
-        strFrom = "History";
         try {
             new GetCurrency().execute(QUANDL_EXCHANGE_RATE_ENDPOINT + "5").get();
         } catch (InterruptedException | ExecutionException ie) {
@@ -91,7 +83,7 @@ public class QuandlCurrencyDao implements CurrencyDao {
         @Override
         protected Map<String, String> doInBackground(String[] params) {
             try {
-                getExchangeRates(new JSONObject(getJsonData(params[0])).getJSONArray("data"), strFrom);
+                getExchangeRates(new JSONObject(getJsonData(params[0])).getJSONArray("data"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
